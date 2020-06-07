@@ -16,7 +16,7 @@ class TaskDetail(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def delete(self, request, pk, format=None):
-        task = self.get_object(pk=pk)
+        task = Task.objects.filter(id=pk).first()
 
         if task is None:
             return Response({"message": "This is not your task"}, status.HTTP_404_NOT_FOUND)
