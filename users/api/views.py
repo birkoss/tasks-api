@@ -35,6 +35,35 @@ class userUsers(APIView):
             'users': users,
         }, status=status.HTTP_200_OK)
 
+    def post(self, request, group_pk, format=None):
+        group = Group.objects.filter(
+            id=group_pk, groupuser__user=request.user).first()
+
+        if group is None:
+            return Response({
+                'message': "Not found",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = User.objects.create_user(
+                serializer.data['email'],
+                request.data['password'],
+                firstname=serializer.data['firstname'],
+            )
+
+            # Link the user with the group
+            group_user = GroupUser(group=group, user=user)
+            group_user.save()
+
+            return Response({
+                'status': status.HTTP_200_OK
+            })
+        else:
+            return Response({
+                'message': serializer.errors,
+            }, status=status.HTTP_404_NOT_FOUND)
+
 
 class userData(APIView):
     authentication_classes = [authentication.TokenAuthentication]

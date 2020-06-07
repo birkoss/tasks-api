@@ -6,7 +6,7 @@ from users.models import Group, GroupUser, User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email']
+        fields = ['id', 'email', 'firstname', 'rewards']
 
 
 class GroupSerializer(serializers.ModelSerializer):
