@@ -11,6 +11,29 @@ from users.models import Group, GroupUser
 from .serializers import TaskSerializer
 
 
+class TaskDetail(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, pk, format=None):
+        task = self.get_object(pk=pk)
+
+        if task is None:
+            return Response({"message": "This is not your task"}, status.HTTP_404_NOT_FOUND)
+
+        group = GroupUser.objects.filter(
+            group=task.group, user=request.user, is_children=False).first()
+
+        if group is None:
+            return Response({"message": "This is not your task"}, status.HTTP_404_NOT_FOUND)
+
+        if request.method == 'DELETE':
+            task.delete()
+            return Response({
+                "status": status.HTTP_200_OK
+            })
+
+
 class tasksList(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
