@@ -67,7 +67,7 @@ class userTasks(APIView):
         # Task already selected by another user
         if task_user is not None:
             return Response({
-                'message': "Not found",
+                'message': "Already selected by another user",
             }, status=status.HTTP_404_NOT_FOUND)
 
         # Link it to this user
