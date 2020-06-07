@@ -10,7 +10,7 @@ class Task(TimeStampedModel, models.Model):
     name = models.CharField(max_length=200, default='')
     description = models.TextField(max_length=200, default='')
 
-    #frequency = 
+# frequency =
 
     reward = models.IntegerField(default=0)
 

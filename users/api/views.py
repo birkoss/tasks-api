@@ -5,9 +5,35 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..models import User, GroupUser
+from ..models import User, Group, GroupUser
 
 from .serializers import GroupUserSerializer, UserSerializer
+
+
+class userUsers(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, group_pk, format=None):
+        group = Group.objects.filter(
+            id=group_pk, groupuser__user=request.user).first()
+
+        if group is None:
+            return Response({
+                'message': "Not found",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        users = []
+        groups = GroupUser.objects.filter(group=group)
+        for group in groups:
+            users.append({
+                'user': UserSerializer(group.user, many=False).data,
+                'is_children': group.is_children,
+            })
+
+        return Response({
+            'users': users,
+        }, status=status.HTTP_200_OK)
 
 
 class userData(APIView):
