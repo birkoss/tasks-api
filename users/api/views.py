@@ -5,19 +5,22 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..models import User
+from ..models import User, GroupUser
 
-from .serializers import UserSerializer
+from .serializers import GroupUserSerializer, UserSerializer
 
 
-class userRewards(APIView):
+class userData(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, format=None):
+        groups = GroupUser.objects.filter(user=request.user)
 
+        serializer = GroupUserSerializer(groups, many=True)
 
         return Response({
+            'groups': serializer.data,
             'rewards': request.user.rewards,
         }, status=status.HTTP_200_OK)
 
@@ -25,7 +28,8 @@ class userRewards(APIView):
 class userLogin(APIView):
     def post(self, request, format=None):
 
-        user = authenticate(request, email=request.data['email'], password=request.data['password'])
+        user = authenticate(
+            request, email=request.data['email'], password=request.data['password'])
         if user is None:
             return Response({
                 'message': 'Invalid information'

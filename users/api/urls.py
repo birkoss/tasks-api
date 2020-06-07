@@ -6,5 +6,5 @@ from . import views as api_views
 urlpatterns = [
     path('api/register', api_views.userRegister.as_view(), name='register'),
     path('api/login', api_views.userLogin.as_view(), name='login'),
-    path('api/rewards', api_views.userRewards.as_view(), name='rewards'),
+    path('api/getData', api_views.userData.as_view(), name='data'),
 ]

@@ -40,6 +40,9 @@ class Group(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, default='')
 
+    def __str__(self):
+        return self.name + " (" + self.user.email + ")"
+
 
 class GroupUser(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
