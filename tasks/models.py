@@ -20,3 +20,4 @@ class TaskUser(TimeStampedModel, models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     date_validated = models.DateTimeField(null=True)
+    date_completed = models.DateTimeField(null=True)

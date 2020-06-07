@@ -5,9 +5,78 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from tasks.models import Task, TaskUser
+
 from ..models import User, Group, GroupUser
 
 from .serializers import GroupUserSerializer, UserSerializer
+
+
+class userTasks(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, group_pk, format=None):
+        group = Group.objects.filter(
+            id=group_pk, groupuser__user=request.user).first()
+
+        if group is None:
+            return Response({
+                'message': "Not found",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        users = []
+        groups = GroupUser.objects.filter(group=group)
+        for group in groups:
+            users.append({
+                'user': UserSerializer(group.user, many=False).data,
+                'is_children': group.is_children,
+            })
+
+        return Response({
+            'users': users,
+        }, status=status.HTTP_200_OK)
+
+    def post(self, request, format=None):
+
+        # Missing task_id param
+        if 'task_id' not in request.data:
+            return Response({
+                'message': "Not found",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        task = Task.objects.filter(pk=request.data['task_id']).first()
+
+        # Task doesnt exist
+        if task is None:
+            return Response({
+                'message': "Not found",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        group_user = GroupUser.objects.filter(
+            group=task.group, user=request.user).first()
+
+        # User not in the task group
+        if group_user is None:
+            return Response({
+                'message': "Not found",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        task_user = TaskUser.objects.filter(task=task).first()
+
+        # Task already selected by another user
+        if task_user is not None:
+            return Response({
+                'message': "Not found",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        # Link it to this user
+        task_user = TaskUser(user=request.user, task=task)
+        task_user.save()
+
+        return Response({
+            'status': status.HTTP_200_OK
+        })
 
 
 class userUsers(APIView):
