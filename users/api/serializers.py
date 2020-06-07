@@ -22,4 +22,4 @@ class GroupUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GroupUser
-        fields = ['group']
+        fields = ['is_children', 'group']
