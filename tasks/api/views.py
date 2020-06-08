@@ -1,4 +1,6 @@
 from django.contrib.auth import login, authenticate
+from django.db.models import F
+from django.core import serializers
 
 from rest_framework import status, authentication, permissions
 from rest_framework.authtoken.models import Token
@@ -47,12 +49,22 @@ class tasksList(APIView):
                 'message': "Not found",
             }, status=status.HTTP_404_NOT_FOUND)
 
-        tasks = Task.objects.filter(group=group)
+        tasks = Task.objects.filter(group=group).values('id', 'name', 'description', 'reward', 'date_added', selected_user_id=F(
+            'taskuser__user__id'), selected_user_firstname=F('taskuser__user__firstname'))
 
-        serializer = TaskSerializer(tasks, many=True)
+        data = []
+        for task in tasks:
+            data.append({
+                'id': task['id'],
+                'name': task['name'],
+                'description': task['description'],
+                'reward': task['reward'],
+                'selected_user_id': task['selected_user_id'],
+                'selected_user_firstname': task['selected_user_firstname'],
+            })
 
         return Response({
-            'tasks': serializer.data,
+            'tasks': data
         }, status=status.HTTP_200_OK)
 
     def post(self, request, group_pk, format=None):
