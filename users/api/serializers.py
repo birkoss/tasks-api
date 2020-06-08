@@ -31,3 +31,9 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'email', 'firstname', 'rewards', 'groups']
+
+
+class UserWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'firstname', 'rewards']

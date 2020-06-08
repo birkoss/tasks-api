@@ -10,7 +10,7 @@ from tasks.api.serializers import TaskSerializer, TaskWriteSerializer
 
 from ..models import User, Group, GroupUser
 
-from .serializers import GroupSerializer, GroupUserSerializer, UserSerializer
+from .serializers import GroupSerializer, GroupUserSerializer, UserSerializer, UserWriteSerializer
 
 
 class groupsUsersList(APIView):
@@ -43,6 +43,47 @@ class groupsUsersList(APIView):
             "status": status.HTTP_200_OK,
             'users': UserSerializer(users, many=True).data,
         }, status=status.HTTP_200_OK)
+
+    def post(self, request, pk, format=None):
+        group = Group.objects.filter(id=pk).first()
+
+        # Group doesnt exist
+        if group is None:
+            return Response({
+                'status': status.HTTP_404_NOT_FOUND,
+                'message': "Not found",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        group_user = GroupUser.objects.filter(
+            group=group, user=request.user).first()
+
+        # User is not in this group?
+        if group_user is None:
+            return Response({
+                'status': status.HTTP_403_FORBIDDEN,
+                'message': "Can't access this",
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = UserWriteSerializer(data=request.data)
+        if serializer.is_valid():
+            user = User.objects.create_user(
+                serializer.data['email'],
+                request.data['password'],
+                firstname=serializer.data['firstname'],
+            )
+
+            # Link the user with the group
+            group_user = GroupUser(group=group, user=user)
+            group_user.save()
+
+            return Response({
+                'status': status.HTTP_200_OK
+            })
+        else:
+            return Response({
+                'status': status.HTTP_400_BAD_REQUEST,
+                'message': serializer.errors,
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class groupsTasksList(APIView):

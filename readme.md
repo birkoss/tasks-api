@@ -140,6 +140,24 @@ Get all users of this group
 -   status (number)
 -   users (objects)
 
+## POST /api/groups/ID/users
+
+Add a new user in this group
+
+### Request Parameters
+
+-   ID (string)
+
+### Request Body
+
+-   email (string)
+-   password (string)
+-   firstname (number)
+
+### Responses
+
+-   status (number)
+
 ## GET /api/groups/ID/tasks
 
 Get all tasks of this group
