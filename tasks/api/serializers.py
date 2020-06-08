@@ -19,3 +19,9 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = ['id', 'name', 'description', 'reward',
                   'taskusers']
+
+
+class TaskWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = ['id', 'name', 'description', 'reward']

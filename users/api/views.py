@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from tasks.models import Task, TaskUser
-from tasks.api.serializers import TaskSerializer
+from tasks.api.serializers import TaskSerializer, TaskWriteSerializer
 
 from ..models import User, Group, GroupUser
 
@@ -76,6 +76,40 @@ class groupsTasksList(APIView):
             "status": status.HTTP_200_OK,
             'tasks': serializer.data,
         }, status=status.HTTP_200_OK)
+
+    def post(self, request, pk, format=None):
+        group = Group.objects.filter(id=pk).first()
+
+        # Group doesnt exist
+        if group is None:
+            return Response({
+                'status': status.HTTP_404_NOT_FOUND,
+                'message': "Not found",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        group_user = GroupUser.objects.filter(
+            group=group, user=request.user).first()
+
+        # User is not in this group?
+        if group_user is None:
+            return Response({
+                'status': status.HTTP_403_FORBIDDEN,
+                'message': "Can't do this",
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = TaskWriteSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(group=group, user=request.user)
+
+            return Response({
+                'task': serializer.data,
+                'status': status.HTTP_200_OK
+            })
+
+        return Response({
+            "status": status.HTTP_400_BAD_REQUEST,
+            'message': serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class groupsList(APIView):
@@ -155,7 +189,7 @@ class account(APIView):
         }, status=status.HTTP_200_OK)
 
 
-class login(APIView):
+class loginUser(APIView):
     def post(self, request, format=None):
 
         user = authenticate(
@@ -174,7 +208,7 @@ class login(APIView):
         }, status=status.HTTP_200_OK)
 
 
-class register(APIView):
+class registerUser(APIView):
     def post(self, request, format=None):
         serializer = UserSerializer(data=request.data)
 

@@ -153,6 +153,25 @@ Get all tasks of this group
 -   status (number)
 -   tasks (objects)
 
+## POST /api/groups/ID/tasks
+
+Add a new task in this group
+
+### Request Parameters
+
+-   ID (string)
+
+### Request Body
+
+-   name (string)
+-   description (string)
+-   reward (number)
+
+### Responses
+
+-   status (number)
+-   tasks (objects)
+
 # API Endpoint remaining
 
 ## DELETE /api/users/ID
