@@ -3,14 +3,14 @@ from rest_framework import serializers
 from users.models import Group, GroupUser, User
 
 
-class UserSerializer(serializers.ModelSerializer):
+class BasicUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'firstname', 'rewards']
+        fields = ['id', 'email', 'firstname']
 
 
 class GroupSerializer(serializers.ModelSerializer):
-    user = UserSerializer(many=False, read_only=True)
+    user = BasicUserSerializer(many=False, read_only=True)
 
     class Meta:
         model = Group
@@ -23,3 +23,11 @@ class GroupUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupUser
         fields = ['is_children', 'group']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    groups = GroupUserSerializer(source='groupuser_set', many=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'firstname', 'rewards', 'groups']

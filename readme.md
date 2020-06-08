@@ -72,26 +72,91 @@ Delete a specific task. The current user must NOT have a children account.
 
 -   status (number)
 
-```
+## PUT /api/tasks/ID/select
 
-
-
-
+Select the task with the current user
 
 ### Request Parameters
 
--   groups (GET)
--   groups/ID/tasks (GET, POST)
--   groups/ID/users (GET, POST)
+-   ID (string)
 
--   tasks (GET)
--   tasks/ID (GET, DELETE)
+### Responses
 
--   tasks/ID/complete (PUT) [TODO]
--   tasks/ID/validate (PUT) [TODO]
--   tasks/ID/select (PUT)
--   tasks/ID/unselect (PUT)
+-   status (number)
 
--   users/ID (DELETE) [TODO]
--   users/ID/tasks (GET)
-```
+## PUT /api/tasks/ID/unselect
+
+Unselect the task, if already selected by the current user
+
+### Request Parameters
+
+-   ID (string)
+
+### Responses
+
+-   status (number)
+
+## GET /api/users
+
+Get all users in all groups the user have
+
+### Responses
+
+-   status (number)
+-   users (objects)
+
+## GET /api/users/ID/tasks
+
+Get all tasks selected by a user
+
+### Request Parameters
+
+-   ID (string)
+
+### Responses
+
+-   status (number)
+-   tasks (objects)
+
+## GET /api/groups
+
+Get all groups
+
+### Responses
+
+-   status (number)
+-   groups (objects)
+
+## GET /api/groups/ID/users
+
+Get all users of this group
+
+### Request Parameters
+
+-   ID (string)
+
+### Responses
+
+-   status (number)
+-   users (objects)
+
+## GET /api/groups/ID/tasks
+
+Get all tasks of this group
+
+### Request Parameters
+
+-   ID (string)
+
+### Responses
+
+-   status (number)
+-   tasks (objects)
+
+# API Endpoint remaining
+
+## DELETE /api/users/ID
+
+## PUT /tasks/ID/complete
+
+## PUT /tasks/ID/validate

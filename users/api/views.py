@@ -6,10 +6,137 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from tasks.models import Task, TaskUser
+from tasks.api.serializers import TaskSerializer
 
 from ..models import User, Group, GroupUser
 
-from .serializers import GroupUserSerializer, UserSerializer
+from .serializers import GroupSerializer, GroupUserSerializer, UserSerializer
+
+
+class groupsUsersList(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk, format=None):
+        group = Group.objects.filter(id=pk).first()
+
+        # Group doesnt exist
+        if group is None:
+            return Response({
+                'status': status.HTTP_404_NOT_FOUND,
+                'message': "Not found",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        group_user = GroupUser.objects.filter(
+            group=group, user=request.user).first()
+
+        # User is not in this group?
+        if group_user is None:
+            return Response({
+                'status': status.HTTP_403_FORBIDDEN,
+                'message': "Can't access this",
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        users = User.objects.filter(groupuser__group=group)
+
+        return Response({
+            "status": status.HTTP_200_OK,
+            'users': UserSerializer(users, many=True).data,
+        }, status=status.HTTP_200_OK)
+
+
+class groupsTasksList(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk, format=None):
+        group = Group.objects.filter(id=pk).first()
+
+        # Group doesnt exist
+        if group is None:
+            return Response({
+                'status': status.HTTP_404_NOT_FOUND,
+                'message': "Not found",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        group_user = GroupUser.objects.filter(
+            group=group, user=request.user).first()
+
+        # User is not in this group?
+        if group_user is None:
+            return Response({
+                'status': status.HTTP_403_FORBIDDEN,
+                'message': "Can't access this",
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        tasks = Task.objects.filter(group=group)
+        serializer = TaskSerializer(instance=tasks, many=True)
+
+        return Response({
+            "status": status.HTTP_200_OK,
+            'tasks': serializer.data,
+        }, status=status.HTTP_200_OK)
+
+
+class groupsList(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, format=None):
+
+        groups = Group.objects.filter(
+            groupuser__user=request.user)
+
+        return Response({
+            "status": status.HTTP_200_OK,
+            'groups': GroupSerializer(groups, many=True).data,
+        }, status=status.HTTP_200_OK)
+
+
+class usersTasksList(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk, format=None):
+        user = User.objects.filter(id=pk).first()
+
+        # User doesnt exist
+        if user is None:
+            return Response({
+                'status': status.HTTP_404_NOT_FOUND,
+                'message': "Not found",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        # Not the same user
+        # @TODO If the request is made by a parent, allow it
+        # if request.user != user:
+        #     return Response({
+        #         'status': status.HTTP_404_NOT_FOUND,
+        #         'message': "You can only access your own tasks",
+        #     }, status=status.HTTP_404_NOT_FOUND)
+
+        tasks = Task.objects.filter(taskuser__user=user)
+        serializer = TaskSerializer(instance=tasks, many=True)
+
+        return Response({
+            "status": status.HTTP_200_OK,
+            'tasks': serializer.data,
+        }, status=status.HTTP_200_OK)
+
+
+class usersList(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, format=None):
+
+        users = User.objects.filter(
+            groupuser__group__groupuser__user=request.user)
+
+        return Response({
+            "status": status.HTTP_200_OK,
+            'users': UserSerializer(users, many=True).data,
+        }, status=status.HTTP_200_OK)
 
 
 class userTask(APIView):
