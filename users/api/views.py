@@ -174,7 +174,7 @@ class userUsers(APIView):
             }, status=status.HTTP_404_NOT_FOUND)
 
 
-class userData(APIView):
+class account(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
@@ -189,7 +189,7 @@ class userData(APIView):
         }, status=status.HTTP_200_OK)
 
 
-class userLogin(APIView):
+class login(APIView):
     def post(self, request, format=None):
 
         user = authenticate(
@@ -208,7 +208,7 @@ class userLogin(APIView):
         }, status=status.HTTP_200_OK)
 
 
-class userRegister(APIView):
+class register(APIView):
     def post(self, request, format=None):
         serializer = UserSerializer(data=request.data)
 

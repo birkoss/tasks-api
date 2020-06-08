@@ -1,42 +1,35 @@
-- Users
+== API Endpoint ==
+
+```
+- register 			(POST)
 	- email
-	- rewards
+	- password
+
+	= token
+
+- login 			(POST)
+	- email
+	- password
+
+	= token
+
+- account 			(GET)
+	= rewards
+	= groups
 
 
-Groups
-    - User
-    - Name
-    - Date Added
-    - Date Changed
+- groups			(GET)
+- groups/ID/tasks 	(GET, POST)
+- groups/ID/users   (GET, POST)
 
+- tasks 			(GET)
+- tasks/ID 			(GET, DELETE)
 
-GroupUser
-    - User
-    - is_staff
-    - Date Added
-    - Date Updated
+- tasks/ID/complete (PUT)			[TODO]
+- tasks/ID/validate (PUT)			[TODO]
+- tasks/ID/select 	(PUT)
+- tasks/ID/unselect (PUT)
 
-
-Tasks
-	- User
-    - Group
-	- Name
-	- Description
-	- Frequency
-	- Reward
-
-	- Date Added
-	- Date Changed
-
-
-UserTasks
-	- User
-	- Task
-
-	- Date Added
-	- Date Validated
-
-
-Group
-    - User
-    - Role
+- users/ID 			(DELETE)		[TODO]
+- users/ID/tasks 	(GET)
+```
