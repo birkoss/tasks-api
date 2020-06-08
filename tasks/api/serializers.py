@@ -1,13 +1,21 @@
 from rest_framework import serializers
 
 from ..models import Task, TaskUser
+from users.api.serializers import UserSerializer
+
+
+class TaskUserSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = TaskUser
+        fields = ['user', 'date_validated', 'date_completed']
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    selected_user_id = serializers.SerializerMethodField()
-    selected_user_firstname = serializers.SerializerMethodField()
+    taskusers = TaskUserSerializer(source='taskuser_set', many=True)
 
     class Meta:
         model = Task
         fields = ['id', 'name', 'description', 'reward',
-                  'selected_user_id', 'selected_user_firstname']
+                  'taskusers']

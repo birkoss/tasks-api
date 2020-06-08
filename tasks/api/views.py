@@ -49,22 +49,12 @@ class tasksList(APIView):
                 'message': "Not found",
             }, status=status.HTTP_404_NOT_FOUND)
 
-        tasks = Task.objects.filter(group=group).values('id', 'name', 'description', 'reward', 'date_added', selected_user_id=F(
-            'taskuser__user__id'), selected_user_firstname=F('taskuser__user__firstname'))
+        tasks = Task.objects.filter(group=group)
 
-        data = []
-        for task in tasks:
-            data.append({
-                'id': task['id'],
-                'name': task['name'],
-                'description': task['description'],
-                'reward': task['reward'],
-                'selected_user_id': task['selected_user_id'],
-                'selected_user_firstname': task['selected_user_firstname'],
-            })
+        serializer = TaskSerializer(instance=tasks, many=True)
 
         return Response({
-            'tasks': data
+            'tasks': serializer.data
         }, status=status.HTTP_200_OK)
 
     def post(self, request, group_pk, format=None):
