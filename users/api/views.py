@@ -224,6 +224,7 @@ class account(APIView):
         serializer = GroupUserSerializer(groups, many=True)
 
         return Response({
+            "status": status.HTTP_200_OK,
             'id': request.user.pk,
             'groups': serializer.data,
             'rewards': request.user.rewards,
@@ -263,10 +264,10 @@ class registerUser(APIView):
 
             return Response({
                 'status': status.HTTP_200_OK,
-                'item': serializer.data,
                 'token': token.key,
             })
         else:
             return Response({
+                "status": status.HTTP_404_NOT_FOUND,
                 'message': serializer.errors,
             }, status=status.HTTP_404_NOT_FOUND)
