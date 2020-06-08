@@ -7,7 +7,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..models import Task
+from ..models import Task, TaskUser
 from users.models import Group, GroupUser
 
 from .serializers import TaskSerializer
