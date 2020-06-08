@@ -38,6 +38,46 @@ Fetch informations related to the logged in user
 -   rewards (number)
 -   groups (object)
 
+## GET /api/tasks
+
+Get all tasks the current user can access
+
+### Responses
+
+-   status (number)
+-   tasks (objects)
+
+## GET /api/tasks/ID
+
+Retrieve a specific task
+
+### Request Parameters
+
+-   ID (string)
+
+### Responses
+
+-   status (number)
+-   task (object)
+
+## DELETE /api/tasks/ID
+
+Delete a specific task. The current user must NOT have a children account.
+
+### Request Parameters
+
+-   ID (string)
+
+### Responses
+
+-   status (number)
+
+```
+
+
+
+
+
 ### Request Parameters
 
 -   groups (GET)
@@ -54,7 +94,4 @@ Fetch informations related to the logged in user
 
 -   users/ID (DELETE) [TODO]
 -   users/ID/tasks (GET)
-
-```
-
 ```
