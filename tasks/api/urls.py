@@ -10,6 +10,4 @@ urlpatterns = [
          api_views.tasksSelect.as_view(), name='task-select'),
     path('api/tasks/<str:pk>/unselect',
          api_views.tasksUnselect.as_view(), name='task-unselect'),
-    #path('api/tasks/<str:group_pk>', api_views.tasksList.as_view(), name='tasks'),
-    #path('api/task/<str:pk>', api_views.TaskDetail.as_view(), name='task'),
 ]
