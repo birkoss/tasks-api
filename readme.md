@@ -1,4 +1,18 @@
-== API Endpoint ==
+# API Endpoint
+
+## User
+
+### POST /api/register
+
+Create a new user
+
+Request Parameters
+
+Request Body
+
+Responses
+
+Fields
 
 ```
 - register 			(POST)
