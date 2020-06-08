@@ -12,6 +12,46 @@ from ..models import User, Group, GroupUser
 from .serializers import GroupUserSerializer, UserSerializer
 
 
+class userTask(APIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, pk, format=None):
+
+        task = Task.objects.filter(pk=pk).first()
+
+        # Task doesnt exist
+        if task is None:
+            return Response({
+                'message': "Not found",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        group_user = GroupUser.objects.filter(
+            group=task.group, user=request.user).first()
+
+        # User not in the task group
+        if group_user is None:
+            return Response({
+                'message': "Not found",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        task_user = TaskUser.objects.filter(
+            task=task, user=request.user).first()
+
+        # Task NOT selected by the user ?
+        if task_user is None:
+            return Response({
+                'message': "This task is not selected by you",
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        # Delete it to this user
+        task_user.delete()
+
+        return Response({
+            'status': status.HTTP_200_OK
+        })
+
+
 class userTasks(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
