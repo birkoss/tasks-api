@@ -1,16 +1,17 @@
 # API Endpoint
 
-## User
-
-### POST /api/register
+## POST /api/register
 
 Create a new user
 
-Request Parameters
+### Request Parameters
 
-Request Body
+### Request Body
 
-Responses
+-   email
+-   password
+
+### Responses
 
 Fields
 
