@@ -10,4 +10,6 @@ urlpatterns = [
          api_views.tasksSelect.as_view(), name='task-select'),
     path('api/tasks/<str:pk>/unselect',
          api_views.tasksUnselect.as_view(), name='task-unselect'),
+    path('api/tasks/<str:pk>/complete',
+         api_views.tasksComplete.as_view(), name='task-complete'),
 ]

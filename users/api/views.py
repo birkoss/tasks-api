@@ -230,6 +230,16 @@ class account(APIView):
             'rewards': request.user.rewards,
         }, status=status.HTTP_200_OK)
 
+    def put(self, request, format=None):
+
+        user = User.objects.filter(pk=request.user.pk).first()
+        user.expo_token = request.data['expoToken']
+        user.save()
+
+        return Response({
+            "status": status.HTTP_200_OK,
+        }, status=status.HTTP_200_OK)
+
 
 class loginUser(APIView):
     def post(self, request, format=None):
@@ -246,6 +256,7 @@ class loginUser(APIView):
         token = Token.objects.get(user=user)
 
         return Response({
+            'status': status.HTTP_200_OK,
             'token': token.key,
         }, status=status.HTTP_200_OK)
 

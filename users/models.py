@@ -28,6 +28,8 @@ class User(PermissionsMixin, TimeStampedModel, AbstractBaseUser):
 
     rewards = models.IntegerField(default=0)
 
+    expo_token = models.CharField(max_length=200, default='')
+
     USERNAME_FIELD = 'email'
 
     objects = UserManager()

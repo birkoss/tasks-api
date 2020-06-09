@@ -14,11 +14,12 @@ class TaskUserSerializer(serializers.ModelSerializer):
 
 class TaskSerializer(serializers.ModelSerializer):
     taskusers = TaskUserSerializer(source='taskuser_set', many=True)
+    user = UserSerializer(read_only=True)
 
     class Meta:
         model = Task
-        fields = ['id', 'name', 'description', 'reward',
-                  'taskusers']
+        fields = ['id', 'name', 'description', 'reward', 'user',
+                  'taskusers', 'date_added']
 
 
 class TaskWriteSerializer(serializers.ModelSerializer):
