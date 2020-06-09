@@ -14,6 +14,8 @@ class Task(TimeStampedModel, models.Model):
 
     reward = models.IntegerField(default=0)
 
+    is_completed = models.BooleanField(default=False)
+
 
 class TaskUser(TimeStampedModel, models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
