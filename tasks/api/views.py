@@ -283,7 +283,7 @@ class tasksList(APIView):
     def get(self, request, format=None):
 
         tasks = Task.objects.filter(
-            group__groupuser__user=request.user).order_by("-date_added")
+            group__groupuser__user=request.user, is_completed=False).order_by("-date_added")
         serializer = TaskSerializer(instance=tasks, many=True)
 
         return Response({

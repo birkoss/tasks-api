@@ -112,7 +112,7 @@ class groupsTasksList(APIView):
                 'message': "Can't access this",
             }, status=status.HTTP_403_FORBIDDEN)
 
-        tasks = Task.objects.filter(group=group)
+        tasks = Task.objects.filter(group=group, is_completed=False)
         serializer = TaskSerializer(instance=tasks, many=True)
 
         return Response({
@@ -200,7 +200,7 @@ class usersTasksList(APIView):
         #         'message': "You can only access your own tasks",
         #     }, status=status.HTTP_404_NOT_FOUND)
 
-        tasks = Task.objects.filter(taskuser__user=user)
+        tasks = Task.objects.filter(taskuser__user=user, is_completed=False)
         serializer = TaskSerializer(instance=tasks, many=True)
 
         return Response({
