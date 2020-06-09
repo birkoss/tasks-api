@@ -5,6 +5,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.helpers import send_push_message
+
 from tasks.models import Task, TaskUser
 from tasks.api.serializers import TaskSerializer, TaskWriteSerializer
 
@@ -141,6 +143,14 @@ class groupsTasksList(APIView):
         serializer = TaskWriteSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(group=group, user=request.user)
+
+            # Notify the Children
+            users = User.objects.filter(
+                groupuser__is_children=True, groupuser__group=group)
+            for user in users:
+                if user.expo_token != "":
+                    send_push_message(user.expo_token, serializer.data['name'] +
+                                      " was added by " + request.user.firstname)
 
             return Response({
                 'task': serializer.data,

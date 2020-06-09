@@ -110,7 +110,7 @@ AUTH_USER_MODEL = 'users.User'
 
 LANGUAGE_CODE = 'en-ca'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Montreal'
 
 USE_I18N = True
 USE_L10N = True

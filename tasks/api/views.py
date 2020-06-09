@@ -9,8 +9,10 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.helpers import send_push_message
+
 from ..models import Task, TaskUser
-from users.models import Group, GroupUser
+from users.models import Group, GroupUser, User
 
 from .serializers import TaskSerializer
 
@@ -134,9 +136,17 @@ class tasksComplete(APIView):
                 'message': "This task is not selected by you",
             }, status=status.HTTP_403_FORBIDDEN)
 
-        # Unlink it
+        # Update the completed date
         task_user.date_completed = datetime.now()
         task_user.save()
+
+        # Notify the parents
+        users = User.objects.filter(
+            groupuser__is_children=False, groupuser__group=task.group)
+        for user in users:
+            if user.expo_token != "":
+                send_push_message(user.expo_token, task.name +
+                                  " was mark as Completed by " + request.user.firstname)
 
         return Response({
             'status': status.HTTP_200_OK
